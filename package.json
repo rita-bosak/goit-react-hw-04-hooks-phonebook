@@ -1,8 +1,8 @@
 {
-  "name": "goit-react-hw-04-phonebook",
+  "name": "goit-react-hw-04-hooks-phonebook",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://rita-bosak.github.io/goit-react-hw-04-phonebook/",
+  "homepage": "https://rita-bosak.github.io/goit-react-hw-04-hooks-phonebook/",
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
