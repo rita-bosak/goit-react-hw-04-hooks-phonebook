@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Container } from '@mui/material';
 import ContactForm from './ContactForm/ContactForm';
@@ -28,12 +28,16 @@ export default class Phonebook extends React.Component {
 
   formSubmitHandler = newContact => {
     const newStateContact = { id: uuidv4(), ...newContact };
+    const { contacts } = this.state;
 
-    for (const contact of this.state.contacts) {
-      if (contact.name === newContact.name) {
-        return alert('This contact already exists');
-      }
+    const existingContact = contacts.find(
+      contact => contact.name === newContact.name
+    );
+
+    if (existingContact) {
+      return alert('This contact already exists');
     }
+
     this.setState(prevState => {
       return { contacts: [...prevState.contacts, newStateContact] };
     });
@@ -41,9 +45,13 @@ export default class Phonebook extends React.Component {
 
   deleteContactHandler = contactToDelete => {
     this.setState(prevState => {
-      const contactIndex = prevState.contacts.indexOf(contactToDelete);
-      prevState.contacts.splice(contactIndex, 1);
-      return { contacts: [...prevState.contacts] };
+      const updatedContacts = prevState.contacts.filter(
+        contact => contact !== contactToDelete
+      );
+
+      return {
+        contacts: [...updatedContacts],
+      };
     });
   };
 
@@ -65,7 +73,7 @@ export default class Phonebook extends React.Component {
         <h1>Phonebook</h1>
         <ContactForm onSubmit={this.formSubmitHandler} />
         <h2>Contacts</h2>
-        <Filter value={this.state.filter} onChange={this.filterHandler} />
+        <Filter value={filter} onChange={this.filterHandler} />
         <ContactList
           contacts={filteredContacts}
           onDelete={this.deleteContactHandler}
