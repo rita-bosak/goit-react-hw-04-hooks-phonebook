@@ -1,12 +1,22 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Container } from '@mui/material';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
 
-export default function Phonebook() {
-  const [contacts, setContacts] = useState([]);
+const Phonebook = () => {
+  const [contacts, setContacts] = useState(() => {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+
+    if (parsedContacts) {
+      return [...parsedContacts];
+    }
+
+    return [];
+  });
+
   const [filter, setFilter] = useState('');
 
   const normalizedFilter = filter.toLowerCase();
@@ -14,15 +24,6 @@ export default function Phonebook() {
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(normalizedFilter)
   );
-
-  useEffect(() => {
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contacts);
-
-    if (parsedContacts) {
-      setContacts({ contacts: parsedContacts });
-    }
-  }, []);
 
   useEffect(() => {
     localStorage.setItem('contacts', JSON.stringify(contacts));
@@ -39,25 +40,21 @@ export default function Phonebook() {
       return alert('This contact already exists');
     }
 
-    setContacts(prevState => {
-      return { contacts: [...prevState.contacts, newStateContact] };
-    });
+    setContacts(state => [...state, newStateContact]);
   };
 
   const deleteContactHandler = contactToDelete => {
-    setContacts(prevState => {
-      const updatedContacts = prevState.contacts.filter(
+    setContacts(state => {
+      const updatedContacts = state.filter(
         contact => contact !== contactToDelete
       );
 
-      return {
-        contacts: [...updatedContacts],
-      };
+      return [...updatedContacts];
     });
   };
 
   const filterHandler = e => {
-    setFilter({ filter: e.currentTarget.value });
+    setFilter(e.currentTarget.value);
   };
 
   return (
@@ -73,3 +70,5 @@ export default function Phonebook() {
     </Container>
   );
 }
+
+export default Phonebook;
