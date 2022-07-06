@@ -1,22 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Container } from '@mui/material';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 const Phonebook = () => {
-  const [contacts, setContacts] = useState(() => {
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contacts);
-
-    if (parsedContacts) {
-      return [...parsedContacts];
-    }
-
-    return [];
-  });
-
+  const [contacts, setContacts] = useLocalStorage('contacts', []);
   const [filter, setFilter] = useState('');
 
   const normalizedFilter = filter.toLowerCase();
@@ -24,10 +15,6 @@ const Phonebook = () => {
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(normalizedFilter)
   );
-
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
 
   const formSubmitHandler = newContact => {
     const newStateContact = { id: uuidv4(), ...newContact };
@@ -69,6 +56,6 @@ const Phonebook = () => {
       />
     </Container>
   );
-}
+};
 
 export default Phonebook;
